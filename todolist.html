@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>final todo list</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: gilroy;
+
+        }
+
+        body {
+            height: 100vh;
+            width: 100%;
+            background-color: rgb(12, 6, 6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        h1 {
+            text-transform: uppercase;
+            font-size: 2rem;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+
+        }
+
+        input {
+
+            height: 32px;
+            width: auto;
+            border: 2px solid black;
+            border-radius: 8px;
+            font-size: 18px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: 500;
+
+        }
+
+        .btn {
+            font-size: 22px;
+            border: 1px solid black;
+            border-radius: 20px;
+            background-color: rgb(243, 239, 11);
+            padding: 8px 18px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: 600;
+            transition: all .3s ease-in;
+
+            &:hover {
+                box-shadow: inset 20px 20px 20px 20px rgba(54, 39, 40, .9);
+                background-color: rgb(247, 247, 240);
+                color: white;
+                border: 1px solid rgb(243, 239, 11);
+            }
+        }
+
+        .toDoListItem {
+            color: white;
+            font-size: 22px;
+            font-family: monospace;
+            text-transform: capitalize;
+            padding: 7px;
+            font-weight: 600;
+
+        }
+
+        .small-div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+
+        .small-div p {
+            padding: 6px 12px;
+            letter-spacing: .6px;
+        }
+
+        .small-div button {
+            background-color: rgb(243, 239, 11);
+            font-size: 20px;
+            border: 1px solid black;
+            border-radius: 18px;
+            padding: 6px 12px;
+            font-weight: 500;
+            margin: 10px;
+            cursor: pointer;
+            height: fit-content;
+            transition: all .3s ease-in;
+
+            &:hover {
+                box-shadow: inset 20px 20px 20px 20px rgba(68, 58, 58, 0.9);
+                background-color: rgb(247, 247, 240);
+                color: white;
+
+                border: 1px solid rgb(243, 239, 11);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form action="">
+        <h1>to do app</h1>
+        <br>
+        <section>
+            <input type="text" class="inp">
+            <button type="submit" class="btn">Add</button>
+        </section>
+        <section>
+            <div class="toDoListItem">
+
+            </div>
+        </section>
+
+    </form>
+    <script>
+        let input = document.querySelector(".inp");
+        let btn = document.querySelector(".btn");
+        let toDoListItem = document.querySelector(".toDoListItem");
+        let form = document.querySelector("form");
+
+
+        const getTodoItem = () => {
+            return JSON.parse(localStorage.getItem("myarray"));
+        }
+        const addToLocal = (strArray) => {
+            return localStorage.setItem("myarray", JSON.stringify(strArray));
+        }
+
+
+        let strArray = getTodoItem() || [];
+
+        const addToItem = (element) => {
+            const div = document.createElement("div");
+            div.classList.add("small-div");
+
+            const p = document.createElement("p");
+            p.textContent = element;
+              p.style.cursor="pointer";
+            const button = document.createElement("button");
+            button.textContent = "Delete";
+
+            div.appendChild(p);
+            div.appendChild(button);
+            toDoListItem.appendChild(div);
+            p.addEventListener("click", function () {
+                p.style.textDecoration = "line-through";
+              
+            })
+
+        }
+
+
+        const addToDo = (e) => {
+
+            e.preventDefault();
+            let ToDOArray = input.value.trim();
+            input.value = "";
+            if (ToDOArray != "" && !strArray.includes(ToDOArray)) {
+
+                strArray.push(ToDOArray);
+                strArray = [...new Set(strArray)];
+                localStorage.setItem("myarray", JSON.stringify(strArray));
+                addToItem(ToDOArray);
+
+            }
+
+        }
+
+
+        const showToDOItem = () => {
+            
+            strArray.forEach(element => {
+                addToItem(element);
+            });
+
+
+        }
+        showToDOItem();
+
+        form.addEventListener("submit", addToDo);
+        toDoListItem.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (e.target.tagName == "BUTTON") {
+                {
+
+                    let myItem = e.target.parentElement.firstChild.textContent;
+
+
+
+                    strArray = strArray.filter((elem) => {
+                        return elem != myItem;
+
+                    })
+                    addToLocal(strArray);
+
+                }
+                e.target.parentElement.remove();
+            }
+
+
+        })
+
+
+    </script>
+</body>
+
+</html>
